@@ -4,47 +4,43 @@
 
 First, clone the repository and run `npm i`
 
-Then you must get your Google Gemini API key and then configure your Discord bot. 
+Then you must get your Google AI Studio API key and configure your Discord bot. 
 
 ### Setting up API Keys
 
-1. Obtain a Google Gemini API key
-   - Visit the Google Gemini website 
-   - Simply create a new project and then generate the API key
+1. Obtain a Google AI Studio API key
+   - Visit https://makersuite.google.com/app/apikey
+   - Create a new API key
    - Create a .env file in the root directory 
-   - Put `GEMINI_API_KEY=--your api key---`
-   - You can find your API key by simply copying it from your dashboard in Google AI Studio
+   - Add this line: `GOOGLE_AI_STUDIO_KEY=your-api-key-here`
 
 2. Setup our Discord bot
-   - Go to https://discord.com/developers 
-   - Create a new bot 
-   - On the sidebar, hit Bot 
-   - Once you are on that page, then click copy right under Token 
-   - This is your DISCORD_TOKEN 
-   - Add it in your .env file such as `DISCORD_TOKEN=--your token--`
-   - On the same page as the token, scroll down until you see 'Message Content Intent' and make sure that it is turned on 
+   - Go to https://discord.com/developers/applications
+   - Click "New Application" and give it a name
+   - Go to the "Bot" tab and click "Add Bot"
+   - Under the bot's username, click "Reset Token" and then "Copy"
+   - Add this to your .env file: `DISCORD_TOKEN=your-discord-token-here`
+   - On the same page, under "Privileged Gateway Intents", enable "Message Content Intent"
 
 ### Adding the bot to your server
 
-- Click OAuth2 in the sidebar 
-- Scroll down to OAuth2 URL Generator 
-- Select bot and then copy the URL 
-- Open this URL in a new page
-- You have to make sure that you have created a Discord server 
-- You can add the bot to that server once you have created it from the URL
+- In the Discord Developer Portal, go to the "OAuth2" tab
+- Scroll down to "OAuth2 URL Generator"
+- Under "Scopes", select "bot"
+- Under "Bot Permissions", select the permissions your bot needs (at minimum, "Send Messages")
+- Copy the generated URL and open it in a new browser tab
+- Select a server to add your bot to (you must have the "Manage Server" permission)
 
 ### Running the bot
 
 - Navigate to the src folder by running `cd src`
 - Then run `npm run dev`
 
-Then you can open your chat with the chat bot and you can run the following commands:
+You can now interact with the bot in your Discord server. Available commands are:
 - `!model`
 - `!history`
 - `!clear_history`
 - `!newChat`
 - `!help`
 
-You have a limit on the amount that you can send and it is setup so that it is limited.
-
-It is that simple. Hope you enjoy!
+Note: There's a limit on how frequently you can send messages to avoid hitting API rate limits.
