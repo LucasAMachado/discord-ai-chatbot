@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GEMINI_API_KEY } from '../config/config.js';
 
+// Create a simple class to handle the Gemini API
 class GeminiService {
     constructor() {
         this.genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
@@ -12,17 +13,21 @@ class GeminiService {
     }
 
     async sendMessage(message) {
+        // Check if the message is a command
         if (this.commands.includes(message)) {
             return this.respondToCommand(message);
         }
 
+        // Rate limit the requests
         await this.rateLimitRequest();
 
+        // Initialize the model if it has not been already 
         if (!this.model) {
             this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
         }
 
         try {
+            // Start a new chat session
             const chat = this.model.startChat({
                 history: this.chatHistory,
                 generationConfig: {
@@ -30,36 +35,46 @@ class GeminiService {
                 },
             });
 
+            // Send the message to the model
             const result = await chat.sendMessage(message);
             let fullResponse = '';
 
+            // We have to get the response in chunks first and then 
+            // append them to the fullResponse 
+            // this makes sure that we are able to get all of the text in one response rather than in multiple chunks
             if (result.response && result.response.text) {
                 fullResponse = result.response.text();
             } else if (result.stream) {
-                // Streaming response
                 for await (const chunk of result.stream) {
                     fullResponse += chunk.text();
                 }
             } else {
-                throw new Error("Issue with res format from Gemini API");
+                throw new Error("Error with format of response");
             }
 
             this.messageCount++;
+
+            // Keep track of our own chat history for commands 
             this.chatHistory.push({ role: "user", parts: [{ text: message }] });
             this.chatHistory.push({ role: "model", parts: [{ text: fullResponse }] });
 
             return fullResponse;
         } catch (error) {
+            // This is the error that i was getting when I was sending messages to fast
+            // So we can set a timout and then try again this can be done a better way but this is a simple way to do it
             if (error.status === 429) {
-                console.error("Rate limit exceeded. Waiting before retrying...");
+                console.error("Rate limit exceeded. Retrying in 5 seconds, it should not crash just wait a bit");
+                // keep tyring to send the message after 5 seconds
                 await new Promise(resolve => setTimeout(resolve, 5000));
                 return this.sendMessage(message);
             }
-            console.error("Error sending message:", error);
-            return "Sorry, I encountered an error while processing your message.";
+            console.error("Error occured", error);
+            return "There was an issue when dealing with the message";
         }
     }
 
+    // This function will make sure that we are not sending messages to fast to the API
+    // it does this by checking the time between the last request and the current request
     async rateLimitRequest() {
         const now = Date.now();
         const timeElapsed = now - this.lastRequestTime;
@@ -74,7 +89,7 @@ class GeminiService {
         if (this.chatHistory.length === 0) {
             return "No chat history available.";
         }
-
+        // format the history by grouping the user and model messages together
         return this.chatHistory.map((msg, index) =>
             `${Math.floor(index / 2) + 1}. ${msg.role}: ${msg.parts[0].text}`
         ).join('\n');
@@ -99,7 +114,7 @@ class GeminiService {
             case '!help':
                 return 'The available commands are: ' + this.commands.join(', ');
             default:
-                return 'Command not found, type !help for a list of commands';
+                return 'The command you typed was not found. type !help for a list of commands';
         }
     }
 }

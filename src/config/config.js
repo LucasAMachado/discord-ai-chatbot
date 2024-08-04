@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Load env variables from the .env file
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

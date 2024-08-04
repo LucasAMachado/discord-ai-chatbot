@@ -22,5 +22,5 @@ app.listen(PORT, () => {
 })
 
 initDiscordBot().then(() => {
-    console.log('The discord bot has been initialized successfully');
-}).catch(error => console.error('There was an error when initializing discord bot:', error));
+    console.log('The discord bot has been initialized successfully.');
+}).catch(error => console.error('There was an error when initializing discord bot ->', error));
