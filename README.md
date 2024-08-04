@@ -22,15 +22,21 @@ Then you must get your Google AI Studio API key and configure your Discord bot.
    - Under the bot's username, click "Reset Token" and then "Copy"
    - Add this to your .env file: `DISCORD_TOKEN=your-discord-token-here`
    - On the same page, under "Privileged Gateway Intents", enable "Message Content Intent"
+![Discord Bot Page](assets/Discord_Bot.png)
 
 ### Adding the bot to your server
 
 - In the Discord Developer Portal, go to the "OAuth2" tab
 - Scroll down to "OAuth2 URL Generator"
 - Under "Scopes", select "bot"
+
+![Discord Bot OAuth2](assets/Discord_Bot_OAuth2.png)
+
 - Under "Bot Permissions", select the permissions your bot needs (at minimum, "Send Messages")
 - Copy the generated URL and open it in a new browser tab
 - Select a server to add your bot to (you must have the "Manage Server" permission)
+
+![Discord Bot Permissons](assets/Discord_Bot_Permissions.png)
 
 ### Running the bot
 
@@ -44,4 +50,10 @@ You can now interact with the bot in your Discord server. Available commands are
 - `!newChat`
 - `!help`
 
+![Discord Bot Demo Image](assets/Discord_Bot_Demo_Image.png)
+
+It can even help you center a div!
+
 Note: There's a limit on how frequently you can send messages to avoid hitting API rate limits.
+
+
