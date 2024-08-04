@@ -30,7 +30,11 @@ export const initDiscordBot = () => {
             }
         } catch (error) {
             console.error('Error dealing with message:', error);
-            message.channel.send('There as an issue procceing your message.');
+            if (error.status === 429) {
+                await message.channel.send("To many messages at in a short time span.");
+            } else {
+                await message.channel.send('There was an error sorry!');
+            }
         }
     });
 

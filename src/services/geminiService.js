@@ -8,12 +8,15 @@ class GeminiService {
         this.chatHistory = [];
         this.messageCount = 0;
         this.model = null;
+        this.minTimeBetweenRequests = 1000;
     }
 
     async sendMessage(message) {
         if (this.commands.includes(message)) {
             return this.respondToCommand(message);
         }
+
+        await this.rateLimitRequest();
 
         if (!this.model) {
             this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
@@ -47,10 +50,25 @@ class GeminiService {
 
             return fullResponse;
         } catch (error) {
+            if (error.status === 429) {
+                console.error("Rate limit exceeded. Waiting before retrying...");
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                return this.sendMessage(message);
+            }
             console.error("Error sending message:", error);
             return "Sorry, I encountered an error while processing your message.";
         }
     }
+
+    async rateLimitRequest() {
+        const now = Date.now();
+        const timeElapsed = now - this.lastRequestTime;
+        if (timeElapsed < this.minTimeBetweenRequests) {
+            await new Promise(resolve => setTimeout(resolve, this.minTimeBetweenRequests - timeElapsed));
+        }
+        this.lastRequestTime = Date.now();
+    }
+
 
     getChatHistory() {
         if (this.chatHistory.length === 0) {
