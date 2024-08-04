@@ -14,6 +14,7 @@ Then you must get your Google AI Studio API key and configure your Discord bot.
    - Create a .env file in the root directory 
    - Add this line: `GOOGLE_AI_STUDIO_KEY=your-api-key-here`
 
+![Google AI Studio](assets/Google_AI_Studio.png)
 2. Setup our Discord bot
    - Go to https://discord.com/developers/applications
    - Click "New Application" and give it a name
